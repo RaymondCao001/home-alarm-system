@@ -1,82 +1,15 @@
-/**
- * ========================================
- * 
- * BUTTON A
- * 
- * Select a number
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * BUTTON B
- * 
- * Save / Confirm number
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * MOVEMENT SENSOR
- * 
- * Shake while armed = Intruder Alarm
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * A + B
- * 
- * Show security status
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * AUTOMATIC SECURITY CHECK
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * ALARM FLASH
- * 
- * ========================================
- */
-/**
- * ========================================
- * 
- * SET PASSWORD
- * 
- * ========================================
- */
-/**
- * ========================================
- */
-/**
- * SMART HOME SECURITY SYSTEM
- */
-/**
- * ========================================
- */
-/**
- * ----- VARIABLES -----
- */
 input.onButtonPressed(Button.A, function () {
-    // Only select numbers when setting
-    // or entering a password
-    if (step <= 2 || step == 3) {
-        currentNumber = currentNumber + 1
-        if (currentNumber > 9) {
-            currentNumber = 0
-        }
-        basic.showNumber(currentNumber)
+    // If alarm is active,
+    // user is now entering password
+    if (alarm == true) {
+        enteringPassword = true
     }
+    currentNumber = currentNumber + 1
+    // After 9, go back to 0
+    if (currentNumber > 9) {
+        currentNumber = 0
+    }
+    basic.showNumber(currentNumber)
 })
 input.onButtonPressed(Button.AB, function () {
     if (fireAlarm == true) {
@@ -92,14 +25,19 @@ input.onButtonPressed(Button.AB, function () {
     basic.showNumber(currentNumber)
 })
 input.onButtonPressed(Button.B, function () {
-    // -------------------------
-    // SET PASSWORD
-    // -------------------------
-    // -------------------------
+    // ====================================
+    // STEP 1
+    // SET FIRST PASSWORD DIGIT
+    // ====================================
+    // ====================================
+    // STEP 2
+    // SET SECOND PASSWORD DIGIT
+    // ====================================
+    // ====================================
+    // STEP 3
     // ENTER PASSWORD
-    // -------------------------
+    // ====================================
     if (step == 1) {
-        // Save first digit
         firstDigit = currentNumber
         basic.showIcon(IconNames.Yes)
         basic.pause(500)
@@ -107,8 +45,6 @@ input.onButtonPressed(Button.B, function () {
         step = 2
         basic.showNumber(currentNumber)
     } else if (step == 2) {
-        // Save second digit
-        // Create two-digit password
         Password = firstDigit * 10 + currentNumber
         basic.showIcon(IconNames.Yes)
         basic.showString("SAVED")
@@ -120,8 +56,16 @@ input.onButtonPressed(Button.B, function () {
         basic.showString("OFF")
         basic.showNumber(currentNumber)
     } else if (step == 3) {
-        // First digit
-        // Second digit
+        // Stop alarm display while entering PIN
+        if (alarm == true) {
+            enteringPassword = true
+        }
+        // --------------------------------
+        // FIRST DIGIT
+        // --------------------------------
+        // --------------------------------
+        // SECOND DIGIT
+        // --------------------------------
         if (enterStep == 1) {
             enteredFirstDigit = currentNumber
             basic.showIcon(IconNames.Yes)
@@ -131,18 +75,24 @@ input.onButtonPressed(Button.B, function () {
             basic.showNumber(currentNumber)
         } else if (enterStep == 2) {
             enteredPassword = enteredFirstDigit * 10 + currentNumber
-            // Check password
+            // ============================
+            // CORRECT PASSWORD
+            // ============================
+            // ============================
+            // WRONG PASSWORD
+            // ============================
             if (enteredPassword == Password) {
                 basic.showIcon(IconNames.Yes)
-                // If alarm is ON,
-                // correct PIN turns everything OFF
-                // If system is ARMED,
-                // correct PIN disarms it
-                // If system is OFF,
-                // correct PIN arms it
+                // Alarm active:
+                // correct PIN stops alarm
+                // System armed:
+                // correct PIN disarms
+                // System off:
+                // correct PIN arms
                 if (alarm == true) {
                     alarm = false
                     armed = false
+                    enteringPassword = false
                     basic.showString("OFF")
                 } else if (armed == true) {
                     armed = false
@@ -152,67 +102,154 @@ input.onButtonPressed(Button.B, function () {
                     basic.showString("ARMED")
                 }
             } else {
-                // Wrong password
                 basic.showIcon(IconNames.No)
                 basic.showString("WRONG")
+                // If alarm was active,
+                // start alarm again
+                if (alarm == true) {
+                    enteringPassword = false
+                }
             }
-            // Reset password entry
+            // =================================
+            // RESET PASSWORD ENTRY
+            // =================================
             currentNumber = 0
             enterStep = 1
-            basic.showNumber(currentNumber)
+            basic.pause(500)
+            if (alarm == false) {
+                basic.showNumber(currentNumber)
+            }
         }
     }
 })
 input.onGesture(Gesture.Shake, function () {
-    if (armed == true) {
+    // Only trigger ONCE:
+    // system must be armed
+    // AND alarm must currently be off
+    if (armed == true && alarm == false) {
         alarm = true
+        enteringPassword = false
+        // Show ALARM only once
         basic.showString("ALARM")
     }
 })
+/**
+ * ========================================
+ * 
+ * BUTTON A
+ * 
+ * Select number
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * BUTTON B
+ * 
+ * Confirm / Save number
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * SHAKE
+ * 
+ * Intruder detection
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * BUTTON A + B
+ * 
+ * Show security status
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * TEMPERATURE CHECK
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * FIRE ALARM
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * INTRUDER ALARM
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ * 
+ * START - SET PASSWORD
+ * 
+ * ========================================
+ */
+/**
+ * ========================================
+ */
+/**
+ * SMART HOME SECURITY SYSTEM
+ */
+/**
+ * ========================================
+ */
+/**
+ * ========================================
+ */
+/**
+ * VARIABLES
+ */
+/**
+ * ========================================
+ */
 let enteredPassword = 0
 let enteredFirstDigit = 0
 let Password = 0
 let firstDigit = 0
 let armed = false
-let alarm = false
 let fireAlarm = false
+let enteringPassword = false
+let alarm = false
 let currentNumber = 0
 let enterStep = 0
 let step = 0
 step = 1
 enterStep = 1
 let temperatureLimit = 30
-let darknessLimit = 30
 basic.showString("SET")
 basic.showNumber(currentNumber)
 loops.everyInterval(1000, function () {
-    // Only run after password has been set
-    if (step == 3) {
-        // -------------------------
-        // TEMPERATURE CHECK
-        // -------------------------
-        if (input.temperature() > temperatureLimit) {
-            fireAlarm = true
-        } else {
-            fireAlarm = false
-        }
-        // -------------------------
-        // AUTO ARM WHEN DARK
-        // -------------------------
-        if (input.lightLevel() < darknessLimit && armed == false && alarm == false) {
-            armed = true
-            basic.showString("AUTO ARM")
-        }
+    if (input.temperature() > temperatureLimit) {
+        fireAlarm = true
+    } else {
+        fireAlarm = false
     }
 })
 loops.everyInterval(500, function () {
-    // Fire alarm
-    // Intruder alarm
-    if (fireAlarm == true) {
+    // Do not interrupt password entry
+    if (fireAlarm == true && enteringPassword == false) {
         basic.showIcon(IconNames.Skull)
         music.playTone(988, music.beat(BeatFraction.Eighth))
         basic.clearScreen()
-    } else if (alarm == true) {
+    }
+})
+loops.everyInterval(500, function () {
+    // Alarm keeps flashing and sounding
+    // until correct password is entered
+    if (alarm == true && enteringPassword == false) {
         basic.showLeds(`
             . # # # .
             . # # # .
